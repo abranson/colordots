@@ -418,12 +418,12 @@ Page {
                 line = lines[lines.length - 1]
             }
             // If go to new dot beside this one then extend line
-            else if (nearest !== last_dot && nearest.color === last_dot.color && d == 1) {
+            else if (nearest !== last_dot && nearest.color === last_dot.color && d <= 2) {
                 // If already had this dot selected, then made a loop!
                 for (var i = 0; i < selected_dots.length; i++) {
                     if (selected_dots[i] === nearest) {
-                        complete_loop()
-                        return
+                       complete()
+                       return
                     }
                 }
 
@@ -446,6 +446,98 @@ Page {
             line.y2 = y
         }
 
+
+
+        function find_closed_shape(x, y, visited) {
+            var dot = dots[x][y];
+            if (dot === undefined) return []
+            for (var i = 0; i < visited.length; i++) {
+                if (visited[i] === dot) return [];
+            }
+            //console.log("Checking x: "+x+" y:"+y);
+            visited.push(dot);
+
+            // Stop if this is a selected dot
+            for (var i = 0; i < selected_dots.length; i++) {
+                if (selected_dots[i] === dot) {
+                    //console.log("Selection!");
+                    return []
+                }
+            }
+            // If we're at the edge then it's not closed
+            if (x === 0 || y === 0 ||
+                    x >= dots.length-1 || y >= dots[x].length-1) {
+                //console.log("Edge!");
+                return false
+            }
+
+            var gathered_dots = [];
+            //console.log("Adding!");
+            gathered_dots.push(dot);
+
+            var neighbours;
+
+            neighbours = find_closed_shape(x+1, y, visited);
+            if (neighbours === false) return false;
+            else if (neighbours.length > 0) merge_array(gathered_dots, neighbours);
+
+            neighbours = find_closed_shape(x-1, y, visited);
+            if (neighbours === false) return false;
+            else if (neighbours.length > 0) merge_array(gathered_dots, neighbours);
+
+            neighbours = find_closed_shape(x, y+1, visited);
+            if (neighbours === false) return false;
+            else if (neighbours.length > 0) merge_array(gathered_dots, neighbours);
+
+            neighbours = find_closed_shape(x, y-1, visited);
+            if (neighbours === false) return false;
+            else if (neighbours.length > 0) merge_array(gathered_dots, neighbours);
+
+            return gathered_dots;
+        }
+
+        function merge_array(to, from) {
+            while (from.length > 0) {
+                to.push(from.pop());
+            }
+        }
+
+        function clear_closed(dot) {
+            var fill_dots = [ dot ]
+            //console.log("======================")
+            //console.log("New selection: "+dot.x_coord, dot.y_coord)
+            if (dot.x_coord > 1) {
+                //console.log("Left")
+                var left = find_closed_shape(dot.x_coord-1, dot.y_coord, [])
+                if (left) merge_array(fill_dots, left)
+            }
+            if (dot.x_coord < dots.length-2) {
+                //console.log("Right")
+                var right = find_closed_shape(dot.x_coord+1, dot.y_coord, [])
+                if (right) merge_array(fill_dots, right)
+            }
+            if (dot.y_coord > 1) {
+                //console.log("Above")
+                var above = find_closed_shape(dot.x_coord, dot.y_coord-1, [])
+                if (above) merge_array(fill_dots, above)
+            }
+            if (dot.y_coord < dots[dot.x_coord].length-2) {
+                //console.log("Below")
+                var below = find_closed_shape(dot.x_coord, dot.y_coord+1, [])
+                if (below) merge_array(fill_dots, below)
+            }
+            //console.log("Total: "+fill_dots.length)
+            while (fill_dots.length > 0) {
+                var thisDot = fill_dots.pop()
+                if (dots[thisDot.x_coord][thisDot.y_coord] === undefined)
+                    continue
+                dots[thisDot.x_coord][thisDot.y_coord] = undefined
+                thisDot.destroy()
+                n_cleared++
+            }
+
+        }
+
         function complete() {
             if (selected_dots.length < 2) {
                 clear_selection()
@@ -454,39 +546,12 @@ Page {
 
             n_moves--
 
-            // Clear all the selected dots
+            // Clear selection & closed shapes
             for (var i = 0; i < selected_dots.length; i++) {
                 var dot = selected_dots[i]
-                dots[dot.x_coord][dot.y_coord] = undefined
-                dot.destroy()
-                n_cleared++
-            }
-            clear_selection()
-
-            game.fill()
-            actions.update_labels()
-
-            move_complete()
-        }
-
-        function complete_loop() {
-            if (selected_dots.length < 2) {
-                return
+                clear_closed(dot)
             }
 
-            n_moves--
-
-            // Clear all of that color
-            var dot = selected_dots[0]
-            for (var x = 0; x < dots.length; x++) {
-                for (var y = 0; y < dots[0].length; y++) {
-                    if (dots[x][y].color === dot.color) {
-                        dots[x][y].destroy()
-                        dots[x][y] = undefined
-                        n_cleared++
-                    }
-                }
-            }
             clear_selection()
 
             game.fill()
