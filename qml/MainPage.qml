@@ -314,18 +314,9 @@ Page {
                 }
             }
 
-            // If no there are no possible dots to link then make one of the new
-            // dots match an adjacent one
             if (!can_link()) {
-//                var new_dot = new_dots[Math.floor(Math.random() * new_dots.length)]
-//                if (new_dot.y_coord === 0) {
-//                    new_dot.color = dots[new_dot.x_coord][new_dot.y_coord + 1].color
-//                } else {
-//                    new_dot.color = dots[new_dot.x_coord][new_dot.y_coord - 1].color
-//                }
-                // If there's no dots to link, regenerate the field
-                clear_field()
-                fill()
+                // If there's no dots to link, game over
+                end_game()
             }
         }
 
@@ -333,10 +324,22 @@ Page {
             for (var x = 0; x < dots.length; x++)
                 for (var y = 0; y < dots[0].length; y++) {
                     var c = dots[x][y].color
-                    if (x > 0 && dots[x-1][y].color === c)
-                        return true
-                    if (x + 1 < dots.length && dots[x+1][y].color === c)
-                        return true
+                    if (x > 0) {
+                        if (dots[x-1][y].color === c)
+                            return true
+                        if (y > 0 &&  dots[x-1][y-1].color === c)
+                            return true
+                        if (y + 1 < dots[0].length && dots[x-1][y+1].color === c)
+                            return true
+                    }
+                    if (x + 1 < dots.length) {
+                        if (dots[x+1][y].color === c)
+                            return true
+                        if (y > 0 && dots[x+1][y-1].color === c)
+                            return true
+                        if (y + 1 < dots[0].length && dots[x+1][y+1].color === c)
+                            return true
+                    }
                     if (y > 0 && dots[x][y-1].color === c)
                         return true
                     if (y + 1 < dots[0].length && dots[x][y+1].color === c)
