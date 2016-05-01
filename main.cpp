@@ -16,8 +16,8 @@ int main(int argc, char *argv[])
     QScopedPointer<QGuiApplication> app(SailfishApp::application(argc, argv));
     QScopedPointer<QQuickView> view(SailfishApp::createView());
 
-    app->setApplicationName("Colordots");
-    app->setOrganizationName("harbour-colordots");
+    app->setApplicationName("Colourdots");
+    app->setOrganizationName("harbour-colourdots");
     app->setApplicationVersion(APP_VERSION);
 
     view->setSource(SailfishApp::pathTo("qml/main.qml"));

@@ -1,4 +1,4 @@
-TARGET = harbour-colordots
+TARGET = harbour-colourdots
 
 # Application version
 DEFINES += APP_VERSION=\\\"$$VERSION\\\"
@@ -12,9 +12,9 @@ SOURCES += \
 HEADERS +=
 
 OTHER_FILES = \
-    rpm/harbour-colordots.spec \
-    rpm/harbour-colordots.yaml \
-    rpm/harbour-colordots.changes \
+    rpm/harbour-colourdots.spec \
+    rpm/harbour-colourdots.yaml \
+    rpm/harbour-colourdots.changes \
     qml/CoverPage.qml \
     qml/MainPage.qml \
     qml/Settings.qml \

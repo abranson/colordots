@@ -24,7 +24,7 @@ Page {
         width: parent.width;
         anchors { left: parent.left; right: parent.right; }
 
-        PageHeader { id: header; title: "Colordots" }
+        PageHeader { id: header; title: "Colourdots" }
 
         PullDownMenu {
             MenuItem {

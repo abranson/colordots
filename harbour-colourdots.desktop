@@ -1,6 +1,6 @@
 [Desktop Entry]
 Type=Application
 X-Nemo-Application-Type=silica-qt5
-Name=Colordots
-Icon=harbour-colordots
-Exec=harbour-colordots
+Name=Colourdots
+Icon=harbour-colourdots
+Exec=harbour-colourdots

@@ -1,14 +1,14 @@
-Name: harbour-colordots
-Summary: Link as many dots as you can in 30 moves or 60 seconds. Four dots for a square
-Version: 0.4.0
+Name: harbour-colourdots
+Summary: Link as many same coloured dots as you can. Close a shape to include its contents!
+Version: 0.5
 Release: 1
 Group: Amusements/Games
-URL: http://ruleoftech.com/lab/colordots
+URL: http://github.com/abranson/colourdots
 License: LICENSE
 Sources:
 - '%{name}-%{version}.tar.bz2'
 Description: |-
- Link as many dots as you can in thirty moves or 60 seconds. Connect one dot to another, connect four dots to make a square. Ported from Dotty which is written for Ubuntu Phone. Similar to Dots game for Android/iOS.
+ Colourdots is a game of connecting. Link as many dots as you can in thirty moves. Connect two or more dots of the same colour to remove them, make a closed shape to remove all enclosed dots. Iteration of Colordots.
 Configure: none
 Builder: qtc5
 QMakeOptions:
