@@ -29,6 +29,9 @@ CoverBackground {
         anchors.left: parent.left
         anchors.leftMargin: Theme.paddingLarge
         anchors.bottom: parent.bottom
+        anchors.bottomMargin: Theme.paddingLarge
+        width: parent.width - Theme.paddingLarge * 2
+        height: width
         source: "images/colordots-overlay.svg"
         opacity: 0.2
     }
