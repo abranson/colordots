@@ -46,6 +46,11 @@ Page {
                 text: qsTr("30 moves game")
                 onClicked: { play_mode = "default"; actions.start_game() }
             }
+
+            MenuItem {
+                text: qsTr("New game")
+                onClicked: actions.start_game()
+            }
         }
 
         Item {
@@ -53,7 +58,7 @@ Page {
             anchors { top: header.bottom; left: parent.left; right: parent.right; }
 
             property var circle_size: Theme.itemSizeMedium
-            property int circle_spacing: (width - circle_size * 2) / 3
+            property int circle_spacing: (width - circle_size * 3) / 4
 
             Rectangle {
                 id: moves_circle
@@ -62,8 +67,8 @@ Page {
                 x: parent.circle_spacing
                 width: parent.circle_size
                 height: parent.circle_size
-                radius: width / 2
-                color: "#ad7fa8"
+                radius: width / 3
+                color: Theme.highlightColor
                 Label {
                     id: moves_label
                     anchors.fill: parent
@@ -86,11 +91,11 @@ Page {
                 id: score_circle
                 anchors.top: parent.top
                 anchors.topMargin: Theme.paddingMedium
-                x: parent.width - parent.circle_spacing - width
+                x: (parent.width - width) /2
                 width: parent.circle_size
                 height: parent.circle_size
-                radius: width / 2
-                color: "#ad7fa8"
+                radius: width / 3
+                color: Theme.highlightColor
                 Label {
                     id: score_label
                     anchors.fill: parent
@@ -106,7 +111,34 @@ Page {
                 anchors.topMargin: Theme.paddingMedium
                 anchors.horizontalCenter: score_circle.horizontalCenter
                 horizontalAlignment: Text.AlignHCenter
-                text: qsTr("Dots Cleared")
+                text: qsTr("Score")
+            }
+
+            Rectangle {
+                id: current_circle
+                anchors.top: parent.top
+                anchors.topMargin: Theme.paddingMedium
+                x: parent.width - parent.circle_spacing - width
+                width: parent.circle_size
+                height: parent.circle_size
+                radius: width / 3
+                color: Theme.highlightColor
+                Label {
+                    id: current_label
+                    anchors.fill: parent
+                    horizontalAlignment: Text.AlignHCenter
+                    verticalAlignment: Text.AlignVCenter
+                    font.pixelSize: height * 0.5
+                    color: "white"
+                }
+            }
+            Label {
+                id: current_desc_label
+                anchors.top: current_circle.bottom
+                anchors.topMargin: Theme.paddingMedium
+                anchors.horizontalCenter: current_circle.horizontalCenter
+                horizontalAlignment: Text.AlignHCenter
+                text: qsTr("Line")
             }
         }
     }
@@ -178,11 +210,11 @@ Page {
             width: 120
             height: width
             radius: width / 2
-            scale: 0
-            color: "#ad7fa8"
+            color: Theme.highlightColor
             MouseArea {
                 anchors.fill: parent
                 onClicked: actions.start_game()
+                enabled: result_box.visible;
             }
             Label {
                 id: result_label
@@ -319,6 +351,7 @@ Page {
                 lines[i].destroy()
             lines = []
             selected_dots = []
+            current_label.text = "0";
         }
 
         function clear_field() {
@@ -441,7 +474,7 @@ Page {
                 selected_dots.push(nearest)
                 lines.push(line)
             }
-
+            current_label.text = selected_dots.length;
             line.x2 = x
             line.y2 = y
         }
@@ -587,7 +620,7 @@ Page {
 
         function init_game() {
             // Hide UI
-            result_box.scale = 0
+            result_box.visible = false;
             score_history_label.opacity = 0
 
             // Fade game in
@@ -609,7 +642,7 @@ Page {
 
             // Show result
             result_label.text = n_cleared
-            result_box.scale = 1
+            result_box.visible = true;
             score_history_label.opacity = 1
 
             update_scores(n_cleared);
@@ -621,7 +654,7 @@ Page {
 
             // Show result
             result_label.text = ""
-            result_box.scale = 1
+            result_box.visible = true;
             score_history_label.opacity = 1
 
             get_scores(play_mode);
@@ -635,6 +668,7 @@ Page {
             }
 
             score_label.text = n_cleared
+            current_label.text = 0;
         }
 
         function update_scores(n_cleared) {
