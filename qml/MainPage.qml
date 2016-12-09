@@ -570,6 +570,7 @@ Page {
                 dots[thisDot.x_coord][thisDot.y_coord] = undefined
                 thisDot.destroy()
                 n_cleared++
+                if (fill_dots.length > 0) n_moves++
             }
 
         }
