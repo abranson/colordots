@@ -12,10 +12,9 @@ Name:       harbour-colourdots
 %{!?qtc_qmake5:%define qtc_qmake5 %qmake5}
 %{!?qtc_make:%define qtc_make make}
 %{?qtc_builddir:%define _builddir %qtc_builddir}
-Summary:    Link as many same coloured dots as you can. Close a shape to include its contents!
-Version:    0.5
+Summary:    Link coloured dots for points. Make loops for bonuses.
+Version:    1.0
 Release:    1
-Group:      Amusements/Games
 License:    LICENSE
 URL:        http://github.com/abranson/colourdots
 Source0:    %{name}-%{version}.tar.bz2

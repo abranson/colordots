@@ -71,6 +71,7 @@ Page {
                 color: Theme.highlightColor
                 Label {
                     id: moves_label
+                    text: "0"
                     anchors.fill: parent
                     horizontalAlignment: Text.AlignHCenter
                     verticalAlignment: Text.AlignVCenter
@@ -98,6 +99,7 @@ Page {
                 color: Theme.highlightColor
                 Label {
                     id: score_label
+                    text: "0"
                     anchors.fill: parent
                     horizontalAlignment: Text.AlignHCenter
                     verticalAlignment: Text.AlignVCenter
@@ -125,6 +127,7 @@ Page {
                 color: Theme.highlightColor
                 Label {
                     id: current_label
+                    text: "0"
                     anchors.fill: parent
                     horizontalAlignment: Text.AlignHCenter
                     verticalAlignment: Text.AlignVCenter
@@ -193,8 +196,9 @@ Page {
                     game.dots[x] = new Array(6)
                 }
 
-                actions.start_game()
+                //actions.start_game()
                 game.layout()
+                result_box.scale = 1.5
             }
         }
     }
@@ -207,19 +211,19 @@ Page {
             id: result_box
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.verticalCenter: parent.verticalCenter
-            width: 120
+            width: Theme.itemSize.Huge
             height: width
             radius: width / 2
             color: Theme.highlightColor
             MouseArea {
+                id: result_restart
                 anchors.fill: parent
                 onClicked: actions.start_game()
-                enabled: result_box.visible;
             }
             Label {
                 id: result_label
                 anchors.fill: parent
-                text: "999"
+                text: "Colourdots"
                 horizontalAlignment: Text.AlignHCenter
                 verticalAlignment: Text.AlignVCenter
                 color: "white"
@@ -419,11 +423,6 @@ Page {
             line_width = Math.round(dot_radius / 2)
             result_box.width = dot_radius * 10
 
-            for (var x = 0; x < dots.length; x++)
-                for (var y = 0; y < dots[0].length; y++)
-                    place_dot(dots[x][y])
-            for (var i = 0; i < lines.length; line++)
-                lines[i].width = line_width
         }
 
         function place_dot(dot) {
@@ -455,10 +454,9 @@ Page {
             }
             // If go to new dot beside this one then extend line
             else if (nearest !== last_dot && nearest.color === last_dot.color && d <= 2) {
-                // If already had this dot selected, then made a loop!
+                // already had this dot selected
                 for (var i = 0; i < selected_dots.length; i++) {
                     if (selected_dots[i] === nearest) {
-                       complete()
                        return
                     }
                 }
@@ -563,14 +561,22 @@ Page {
                 if (below) merge_array(fill_dots, below)
             }
             //console.log("Total: "+fill_dots.length)
+
             while (fill_dots.length > 0) {
                 var thisDot = fill_dots.pop()
                 if (dots[thisDot.x_coord][thisDot.y_coord] === undefined)
                     continue
                 dots[thisDot.x_coord][thisDot.y_coord] = undefined
+                if (fill_dots.length > 0) {
+                    if (play_mode === "time")
+                        time_left+=5
+                    else
+                        n_moves++
+                }
+                else {
+                    n_cleared++
+                }
                 thisDot.destroy()
-                n_cleared++
-                if (fill_dots.length > 0) n_moves++
             }
 
         }
@@ -624,7 +630,8 @@ Page {
 
         function init_game() {
             // Hide UI
-            result_box.visible = false;
+            result_box.scale = 0;
+            result_restart.enabled = false;
             score_history_label.opacity = 0
 
             // Fade game in
@@ -646,7 +653,8 @@ Page {
 
             // Show result
             result_label.text = n_cleared
-            result_box.visible = true;
+            result_box.scale = 1;
+            result_restart.enabled = true;
             score_history_label.opacity = 1
 
             update_scores(n_cleared);
